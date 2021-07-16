@@ -39,11 +39,14 @@ def read_data():
                 for k in range(len(pos)):
                     demo[k].append(pos[k])
         for key, value in demo.items():
-            demos[key].append( np.array(demo[key]) )
+            demos[key].append( smooth(demo[key]) )
 
     return demos
 
 
+def smooth(x):
+    N=10
+    return np.convolve(x, np.ones(N)/N, mode='valid')
 
 def resample(data):
 
@@ -56,32 +59,26 @@ def resample(data):
 
 def plot_raw(my_data,runner_file=None):
 
-    for traj in [my_data[0],my_data[1]]:
+    f, ax = plt.subplots(6)
+
+    for ii, traj in enumerate([my_data[0], my_data[1],my_data[2],my_data[3],my_data[4],my_data[5]]):
         for demo in traj:
-            plt.plot(demo)
+            ax[ii].plot(smooth(demo), '-')
 
-    with open(runner_file, "rb") as f:
-        unpickler = pickle.Unpickler(f)
-        # if file is not empty scores will be equal
-        # to the value unpickled
-        scores = unpickler.load()
-        print(scores)
 
-    runner = TPGMMRunner.TPGMMRunner(runner_file)
-    path = runner.run()
-    plt.plot(path[:, 0], linewidth=4)
+
     if runner_file is not None:
         runner = TPGMMRunner.TPGMMRunner(runner_file)
         path = runner.run()
-        for i in range(2):
-            plt.plot(path[:, i], linewidth=4)
+        for i in range(6):
+            ax[i].plot(path[:, i], linewidth=4)
 
     plt.show()
 
 
 
 
-def train(my_data):
+def train(my_data, name):
     # trainer = TPGMMTrainer.TPGMMTrainer(demo=[my_data],
     #                                     file_name="first_test",
     #                                     n_rf=15,
@@ -90,17 +87,18 @@ def train(my_data):
     #                                     poly_degree=[3])
 
 
-    trainer = TPGMMTrainer.TPGMMTrainer(demo=[my_data[0], my_data[1] ],
-                                        file_name="new_test",
+    trainer = TPGMMTrainer.TPGMMTrainer(demo=[my_data[0], my_data[1],my_data[2],my_data[3],my_data[4],my_data[5]],
+                                        file_name=name,
                                         n_rf=30,
                                         dt=0.01,
-                                        reg=[1e-5, 1e-5],
-                                        poly_degree=[15,15])
+                                        reg=[1e-2, 1e-2,1e-2, 1e-2,1e-2, 1e-2],
+                                        poly_degree=[25,25,25,25,25,25])
     trainer.train()
 
 
 if __name__ == '__main__':
     # #temp_test()
     my_data = read_data()
-    train(my_data)
-    plot_raw(my_data,"new_test.pickle")
+    name = "clamped_joints"
+    #train(my_data,name)
+    plot_raw(my_data) # , name)
