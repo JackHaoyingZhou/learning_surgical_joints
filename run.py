@@ -1,5 +1,6 @@
 import numpy as np
 import rospy
+import pickle
 from GaitAnaylsisToolkit.LearningTools.Runner import TPGMMRunner
 from GaitAnaylsisToolkit.LearningTools.Trainer import TPGMMTrainer
 import numpy.polynomial.polynomial as poly
@@ -20,15 +21,24 @@ if __name__ == '__main__':
 
     # loop through the trajectory
     count = 0
+    q_list = []
     while count < runner.get_length():
         runner.step()
         q = runner.x # pos
         qd = runner.dx # vel
         qdd = runner.ddx # accel
-        print(q)
+        # print(q)
+        q_list.append(q)
         ##################################
         # send the desired position here #
         ##################################
 
+        count = count + 1
+
         rate.sleep()
 
+    with open('test_data_origin','wb') as fp:
+        pickle.dump(q_list,fp)
+
+    with open('test_data_origin','rb') as fp:
+        itemlist = pickle.load(fp)
