@@ -6,7 +6,7 @@ import pickle
 from GaitAnaylsisToolkit.LearningTools.Runner import TPGMMRunner
 from GaitAnaylsisToolkit.LearningTools.Trainer import TPGMMTrainer
 import numpy.polynomial.polynomial as poly
-
+import pulp
 
 
 def temp_test():
@@ -26,8 +26,9 @@ def read_data():
     for i in range(6):
         demos[i] = []
 
+
     for file in [1,2,3,4,5]:
-        #m, l = JointPosLoader.load_by_prefix(prefix='JP#2021-06-28 13', folder_path='./joint_data/'+str(file))
+        # m, l = JointPosLoader.load_by_prefix(prefix='JP#2021-06-28 13', folder_path='./joint_data/'+str(file))
         m, l = JointPosLoader.load_by_prefix(prefix='JP#2021-08-17 13', folder_path='./joint_data2/'+str(file))
         demo = {}
 
@@ -36,12 +37,10 @@ def read_data():
         for i in range(len(m)):
             for j in range(len(m[0])):
                 pos = m[i][j]['pos']
-                print(pos)
                 for k in range(len(pos)):
                     demo[k].append(pos[k])
         for key, value in demo.items():
-            print(demo[key])
-            demos[key].append(smooth(demo[key]) )
+            demos[key].append( smooth(demo[key]) )
 
     return demos
 
@@ -78,35 +77,33 @@ def plot_raw(my_data,runner_file=None):
     plt.show()
 
 
+count = 0
 
+def train(my_data, bins, reg):
 
-def train(my_data, name):
+    global count
+    count+=1
 
-
-    # # data set 1
     # trainer = TPGMMTrainer.TPGMMTrainer(demo=[my_data[0], my_data[1],my_data[2],my_data[3],my_data[4],my_data[5]],
-    #                                     file_name=name,
-    #                                     n_rf=30,
+    #                                     file_name="file_name",
+    #                                     n_rf=6*[bins],
     #                                     dt=0.01,
-    #                                     reg=[1e-2, 1e-2,1e-2, 1e-2,1e-2, 1e-2],
+    #                                     reg=6*[reg],
     #                                     poly_degree=[25,25,25,25,25,25])
 
-
-    # data set 2
-    trainer = TPGMMTrainer.TPGMMTrainer(demo=[my_data[0], my_data[1],my_data[2],my_data[3],my_data[4],my_data[5]],
-                                        file_name=name,
-                                        n_rf=30,
-                                        dt=0.01,
-                                        reg=[1e-2, 1e-2,1e-2, 1e-2,1e-2, 1e-2],
-                                        poly_degree=[25,25,25,25,25,25])
-
-    my_model = trainer.train()
-    print(my_model)
+    #my_model = trainer.train(save=False)
+    print (6*[bins])
+    return  bins+reg #my_model['BIC']
 
 
 if __name__ == '__main__':
     # #temp_test()
-    my_data = read_data()
-    name = "clamped_joints_set2"
-    # train(my_data, name)
-    plot_raw(my_data  , name)
+    my_data = read_data() 
+    name = "opt_temp"
+
+    model = pulp.LpProblem(name="small-problem", sense=pulp.LpMinimize)
+    bins = pulp.LpVariable(name="bins", lowBound=1, upBound=100, cat='Integer')
+    reg = pulp.LpVariable(name="reg", lowBound=0.0001, upBound=1.0, cat='Continues')
+
+    model += train(my_data, bins, reg)
+    status = model.solve()
