@@ -1,4 +1,4 @@
-from joint_pos_recorder import JointPosLoader
+from learning_surgical_joints.joint_data.joint_pos_recorder import JointPosLoader
 import pickle
 
 m,l = JointPosLoader.load_by_prefix(prefix='JP#2021-06-28 13',folder_path='./joint_data/new_goal')

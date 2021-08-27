@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib
+# matplotlib.use('TkAgg')
+# plt.interactive(False)
 
 from joint_data.joint_pos_recorder import JointPosLoader
 import pickle
@@ -28,7 +31,7 @@ def read_data():
 
     for file in [1,2,3,4,5]:
         #m, l = JointPosLoader.load_by_prefix(prefix='JP#2021-06-28 13', folder_path='./joint_data/'+str(file))
-        m, l = JointPosLoader.load_by_prefix(prefix='JP#2021-08-17 13', folder_path='./joint_data2/'+str(file))
+        m, l = JointPosLoader.load_by_prefix(prefix='JP#2021-08-17', folder_path='./joint_data/'+str(file))
         demo = {}
 
         for i in range(6):
@@ -36,11 +39,11 @@ def read_data():
         for i in range(len(m)):
             for j in range(len(m[0])):
                 pos = m[i][j]['pos']
-                print(pos)
+                # print(pos)
                 for k in range(len(pos)):
                     demo[k].append(pos[k])
         for key, value in demo.items():
-            print(demo[key])
+            # print(demo[key])
             demos[key].append(smooth(demo[key]) )
 
     return demos
@@ -69,13 +72,15 @@ def plot_raw(my_data,runner_file=None):
 
 
 
+
     if runner_file is not None:
         runner = TPGMMRunner.TPGMMRunner(runner_file)
         path = runner.run()
         for i in range(6):
             ax[i].plot(path[:, i], linewidth=4)
 
-    plt.show()
+    plt.show(block=True)
+    plt.interactive(False)
 
 
 
@@ -101,12 +106,12 @@ def train(my_data, name):
                                         poly_degree=[25,25,25,25,25,25])
 
     my_model = trainer.train()
-    print(my_model)
+    # print(my_model)
 
 
 if __name__ == '__main__':
     # #temp_test()
     my_data = read_data()
-    name = "clamped_joints_set2"
+    name = "joint_data_2"
     # train(my_data, name)
-    plot_raw(my_data  , name)
+    plot_raw(my_data, name)
