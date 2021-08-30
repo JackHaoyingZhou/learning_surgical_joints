@@ -12,7 +12,7 @@ def read_file():
         data.append([])
 
     for i in range(1,6):
-        file = "/home/nathanielgoldfarb/learning_surgical_joints/joint_data_task/test" + str(i) +"_pose.pickle"
+        file = "./joint_task/test" + str(i) +"_pose.pickle"
         with open(file, 'rb') as handle:
             raw_data = pickle.load(handle)
         my_data = np.array(raw_data)
@@ -52,7 +52,7 @@ def plot_raw(my_data,runner_file=None):
         for i in range(6):
             ax[i].plot(path[:, i], linewidth=4)
 
-    plt.show()
+    plt.show(block=True)
 
 
 if __name__ == '__main__':

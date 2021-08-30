@@ -17,7 +17,7 @@ import tf
 # with open('test_new.pickle','wb') as fp:
 #     pickle.dump(jp_values,fp)
 
-with open('./5/test5.pickle','rb') as fp:
+with open('../goal_1/goal1.pickle','rb') as fp:
     jp_values = pickle.load(fp)
 
 Pose = []
@@ -35,10 +35,10 @@ for i in range(len(jp_values)):
     Pose_f = [Pos_x, Pos_y, Pos_z, Rot_x, Rot_y, Rot_z]
     Pose.append(Pose_f)
 
-with open('./5/test5_pose.pickle','wb') as fp:
+with open('../goal_1/goal1_pose.pickle','wb') as fp:
     pickle.dump(Pose,fp)
 
-with open('./5/test5_pose.pickle','rb') as fp:
+with open('../goal_1/goal1_pose.pickle','rb') as fp:
     pose_values = pickle.load(fp)
 
 

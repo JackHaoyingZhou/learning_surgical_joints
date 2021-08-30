@@ -13,6 +13,9 @@ import pickle
 # with open(name,'wb') as fp:
 #     pickle.dump(jp_values,fp)
 
+
+name_1 = './task_data_3.pickle'
+# name_1 = './goal_1/goal1_pose.pickle'
 # name_1 = './1/goal1.pickle'
 # name_1 = './joint_data/1/test1.pickle'
 # name_2 = 'train_data_new.pickle'
@@ -30,10 +33,10 @@ with open(name_1,'rb') as fp:
 #     list_ap = list(np_ap.reshape(6))
 #     itemlist_3.append(list_ap)
 #
-# with open('test_1.pickle','wb') as fp:
-#     pickle.dump(itemlist_3,fp,protocol=2)
+# with open('./joint_data/task_3.pickle', 'wb') as fp:
+#     pickle.dump(itemlist_1,fp,protocol=2)
 # #
-# print(itemlist_2[0])
+print(itemlist_1[0])
 # # print(itemlist_2[0])
-# print(itemlist_2[-1])
+print(itemlist_1[-1])
 # # print(itemlist_2[-1])
