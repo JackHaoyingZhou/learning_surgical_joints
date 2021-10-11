@@ -57,5 +57,5 @@ def plot_raw(my_data,runner_file=None):
 
 if __name__ == '__main__':
     data = read_file()
-    train(data,"task_space")
+    # train(data,"task_space")
     plot_raw(data,"task_space")

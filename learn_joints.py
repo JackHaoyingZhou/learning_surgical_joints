@@ -48,6 +48,20 @@ def read_data():
 
     return demos
 
+def read_file():
+    data = []
+    for joint in range(6):
+        data.append([])
+
+    for i in range(1,6):
+        file = "./joint_task/test" + str(i) +"_pose.pickle"
+        with open(file, 'rb') as handle:
+            raw_data = pickle.load(handle)
+        my_data = np.array(raw_data)
+        for j in range(6):
+            data[j].append(my_data[:,j])
+    return data
+
 
 def smooth(x):
     N=10
@@ -112,6 +126,8 @@ def train(my_data, name):
 if __name__ == '__main__':
     # #temp_test()
     my_data = read_data()
-    name = "joint_data_2"
+    name = "joint_space"
     # train(my_data, name)
     plot_raw(my_data, name)
+
+
